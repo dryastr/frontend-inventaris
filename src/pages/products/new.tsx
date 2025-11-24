@@ -8,6 +8,7 @@ const ProductNew = () => {
   const [formData, setFormData] = useState({ name: '', sku: '', quantity: '', price: '' });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; sku?: string; quantity?: string; price?: string }>({});
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,7 +39,12 @@ const ProductNew = () => {
 
       await createProduct(productData);
       navigate('/products?success=created');
-    } catch (err) {
+    } catch (err: any) {
+      if (err.errors && err.errors.sku) {
+        setToast({ message: err.errors.sku[0], type: 'error' });
+      } else {
+        setToast({ message: err.message || 'Gagal menambah produk', type: 'error' });
+      }
     } finally {
       setLoading(false);
     }
@@ -48,23 +54,29 @@ const ProductNew = () => {
     const newErrors: { name?: string; sku?: string; quantity?: string; price?: string } = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Nama tidak boleh kosong';
+      newErrors.name = 'Nama produk wajib diisi';
     }
 
     if (!formData.sku.trim()) {
-      newErrors.sku = 'SKU tidak boleh kosong';
+      newErrors.sku = 'SKU wajib diisi';
     }
 
     if (!formData.quantity.trim()) {
-      newErrors.quantity = 'Jumlah tidak boleh kosong';
-    } else if (parseInt(formData.quantity) < 0) {
-      newErrors.quantity = 'Jumlah harus lebih dari atau sama dengan 0';
+      newErrors.quantity = 'Jumlah wajib diisi';
+    } else {
+      const qty = parseInt(formData.quantity);
+      if (isNaN(qty) || qty < 0 || !Number.isInteger(qty)) {
+        newErrors.quantity = 'Jumlah harus berupa angka bulat positif atau nol';
+      }
     }
 
     if (!formData.price.trim()) {
-      newErrors.price = 'Harga tidak boleh kosong';
-    } else if (parseFloat(formData.price) < 0) {
-      newErrors.price = 'Harga harus lebih dari atau sama dengan 0';
+      newErrors.price = 'Harga wajib diisi';
+    } else {
+      const prc = parseFloat(formData.price);
+      if (isNaN(prc) || prc < 100) {
+        newErrors.price = 'Harga harus berupa angka minimal 100';
+      }
     }
 
     setErrors(newErrors);
@@ -88,7 +100,6 @@ const ProductNew = () => {
                   <input
                     type="text"
                     id="name"
-                    required
                     className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base ${
                       errors.name ? 'border-red-500' : 'border-gray-300'
                     }`}
@@ -102,7 +113,6 @@ const ProductNew = () => {
                   <input
                     type="text"
                     id="sku"
-                    required
                     className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base ${
                       errors.sku ? 'border-red-500' : 'border-gray-300'
                     }`}
@@ -116,8 +126,6 @@ const ProductNew = () => {
                   <input
                     type="number"
                     id="quantity"
-                    required
-                    min="0"
                     className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base ${
                       errors.quantity ? 'border-red-500' : 'border-gray-300'
                     }`}
@@ -132,15 +140,12 @@ const ProductNew = () => {
                   <input
                     type="number"
                     id="price"
-                    required
-                    min="0"
-                    step="0.01"
                     className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base ${
                       errors.price ? 'border-red-500' : 'border-gray-300'
                     }`}
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    placeholder="0.00"
+                    placeholder="1000"
                   />
                   {errors.price && <p className="mt-1 text-sm text-red-600">{errors.price}</p>}
                 </div>
@@ -165,6 +170,14 @@ const ProductNew = () => {
           </div>
         </div>
       </div>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </MainLayout>
   );
 };

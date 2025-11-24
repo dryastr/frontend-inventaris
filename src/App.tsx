@@ -12,7 +12,7 @@ function App() {
     const token = localStorage.getItem('token');
     const currentPath = window.location.pathname;
 
-    if (!token && !['/login', '/register'].includes(currentPath)) {
+    if (!token && !['/login', '/register', '/products'].includes(currentPath)) {
       window.location.href = '/login';
     }
   }, []);

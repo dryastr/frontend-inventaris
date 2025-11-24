@@ -1,9 +1,10 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { BarChart3, Package, LogOut } from 'lucide-react';
+import { BarChart3, Package, LogOut, LogIn } from 'lucide-react';
 
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
   const menuItems = [
     { path: '/dashboard', label: 'Dashboard', icon: BarChart3 },
@@ -41,13 +42,23 @@ const Sidebar = () => {
       </nav>
 
       <div className="absolute bottom-8 left-0 right-0 px-4">
-        <button
-          onClick={handleLogout}
-          className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-700 rounded-md hover:bg-red-50 hover:text-red-700 transition-all duration-200"
-        >
-          <LogOut className="mr-3 h-5 w-5" />
-          Keluar
-        </button>
+        {token ? (
+          <button
+            onClick={handleLogout}
+            className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-700 rounded-md hover:bg-red-50 hover:text-red-700 transition-all duration-200"
+          >
+            <LogOut className="mr-3 h-5 w-5" />
+            Keluar
+          </button>
+        ) : (
+          <button
+            onClick={() => navigate('/login')}
+            className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-700 rounded-md hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200"
+          >
+            <LogIn className="mr-3 h-5 w-5" />
+            Masuk
+          </button>
+        )}
       </div>
     </aside>
   );

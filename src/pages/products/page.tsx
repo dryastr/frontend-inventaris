@@ -16,16 +16,11 @@ const ProductsIndex = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; productId: number | null }>({ isOpen: false, productId: null });
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
     const success = searchParams.get('success');
     if (success === 'created') {
       setToast({ message: 'Produk berhasil ditambahkan', type: 'success' });
@@ -36,7 +31,7 @@ const ProductsIndex = () => {
     }
 
     fetchProducts();
-  }, [currentPage, searchQuery, navigate, searchParams, setSearchParams]);
+  }, [currentPage, searchQuery, searchParams, setSearchParams]);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -92,12 +87,14 @@ const ProductsIndex = () => {
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold text-gray-900">Manajemen Produk</h1>
           <div className="flex space-x-4">
-            <button
-              onClick={() => navigate('/products/create')}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-            >
-              Tambah Produk
-            </button>
+            {isAuthenticated && (
+              <button
+                onClick={() => navigate('/products/create')}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+              >
+                Tambah Produk
+              </button>
+            )}
           </div>
         </div>
 
@@ -115,6 +112,7 @@ const ProductsIndex = () => {
             onEdit={handleEdit}
             onDelete={handleDeleteClick}
             loading={loading}
+            isAuthenticated={isAuthenticated}
           />
         </div>
       </div>

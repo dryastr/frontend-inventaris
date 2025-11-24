@@ -9,9 +9,10 @@ interface DataTableProps {
   onEdit: (product: Product) => void;
   onDelete: (id: number) => void;
   loading?: boolean;
+  isAuthenticated?: boolean;
 }
 
-const DataTable = ({ data, currentPage, totalPages, onPageChange, onEdit, onDelete, loading = false }: DataTableProps) => {
+const DataTable = ({ data, currentPage, totalPages, onPageChange, onEdit, onDelete, loading = false, isAuthenticated = false }: DataTableProps) => {
   const [entriesPerPage, setEntriesPerPage] = useState(10);
 
   const startEntry = (currentPage - 1) * entriesPerPage + 1;
@@ -72,18 +73,24 @@ const DataTable = ({ data, currentPage, totalPages, onPageChange, onEdit, onDele
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.quantity}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rp {product.price.toLocaleString()}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 space-x-2">
-                      <button
-                        onClick={() => onEdit(product)}
-                        className="text-indigo-600 hover:text-indigo-900"
-                      >
-                        Ubah
-                      </button>
-                      <button
-                        onClick={() => onDelete(product.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        Hapus
-                      </button>
+                      {isAuthenticated ? (
+                        <>
+                          <button
+                            onClick={() => onEdit(product)}
+                            className="text-indigo-600 hover:text-indigo-900"
+                          >
+                            Ubah
+                          </button>
+                          <button
+                            onClick={() => onDelete(product.id)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            Hapus
+                          </button>
+                        </>
+                      ) : (
+                        <span className="text-gray-400">Login untuk mengelola</span>
+                      )}
                     </td>
                   </tr>
                 ))
