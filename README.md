@@ -1,73 +1,39 @@
-# React + TypeScript + Vite
+# Frontend - Inventory Management Web App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplikasi web untuk mengelola inventaris produk, dibangun dengan React, TypeScript, dan Tailwind CSS. Aplikasi ini terintegrasi dengan API backend Laravel untuk operasi CRUD produk.
 
-Currently, two official plugins are available:
+## Persyaratan Sistem
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js versi 18 atau yang lebih baru
+- npm atau yarn untuk manajemen paket
 
-## React Compiler
+## Cara Menjalankan Frontend
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Pastikan backend API sudah berjalan di `http://localhost:8000` (lihat README di folder backend untuk instruksi setup)
+2. Masuk ke folder frontend: `cd frontend`
+3. Install dependencies: `npm install`
+4. Jalankan development server: `npm run dev`
 
-## Expanding the ESLint configuration
+Aplikasi web akan berjalan di `http://localhost:5173` (port default Vite).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Fitur Utama
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Autentikasi**: Registrasi user baru dan login
+- **Dashboard**: Halaman utama setelah login
+- **Manajemen Produk**:
+  - Melihat daftar produk dengan pagination dan search
+  - Menambah produk baru
+  - Mengedit produk existing
+  - Menghapus produk
+- **State Management**: Menangani loading state dan pesan error/sukses
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Credentials untuk Testing
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Gunakan credentials yang sama dengan yang digunakan di backend API. Anda dapat:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+1. Registrasi user baru melalui halaman register aplikasi
+2. Atau gunakan contoh credentials berikut untuk testing:
+   - Email: test@example.com
+   - Password: password123
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Pastikan user tersebut sudah terdaftar di backend. Setelah login berhasil, token akan disimpan secara otomatis dan Anda dapat mengakses semua fitur manajemen produk.
