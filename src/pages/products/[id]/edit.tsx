@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { updateProduct, getProduct } from '../../../services';
-import type { Product } from '../../../types/Product';
 import Toast from '../../../components/ui/Toast';
 import MainLayout from '../../../layouts/MainLayout';
 
@@ -38,7 +37,7 @@ const ProductEdit = () => {
         name: product.name,
         sku: product.sku,
         quantity: product.quantity.toString(),
-        price: product.price % 1 === 0 ? Math.floor(product.price).toString() : product.price.toString(),
+        price: Math.round(product.price).toString(),
       });
     } catch (err: any) {
       setToast({ message: 'Gagal memuat data produk', type: 'error' });

@@ -11,7 +11,7 @@ const Dashboard = () => {
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     document.title = 'Dashboard - Interview App';
   }, []);
@@ -53,9 +53,9 @@ const Dashboard = () => {
             </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-2 text-gray-900">Total Nilai</h3>
+            <h3 className="text-lg font-semibold mb-2 text-gray-900">Total Harga</h3>
             <p className="text-2xl font-bold text-purple-600">
-              Rp {products.reduce((sum, product) => sum + (product.price * product.quantity), 0).toLocaleString()}
+              Rp {Math.round(products.reduce((sum, product) => sum + Number(product.price), 0)).toLocaleString()}
             </p>
           </div>
         </div>
@@ -84,7 +84,7 @@ const Dashboard = () => {
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.name}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.sku}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.quantity}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rp {product.price.toLocaleString()}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rp {Math.round(Number(product.price)).toLocaleString()}</td>
                       </tr>
                     ))}
                   </tbody>

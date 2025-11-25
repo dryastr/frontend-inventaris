@@ -99,7 +99,7 @@ const DataTable = ({ data, columns, actions = [], currentPage, totalPages, total
                     {showNumbers && <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{(currentPage - 1) * entriesPerPage + index + 1}</td>}
                     {columns.map((column) => (
                       <td key={column.key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {column.key === 'price' ? `Rp ${item[column.key]?.toLocaleString()}` : item[column.key]}
+                        {column.key === 'price' ? `Rp ${Math.round(Number(item[column.key]))?.toLocaleString()}` : item[column.key]}
                       </td>
                     ))}
                     {actions.length > 0 && (
