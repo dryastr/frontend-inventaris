@@ -14,14 +14,20 @@ const ProductEdit = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = 'Edit Produk - Interview App';
+  }, []);
+
+  useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');
       return;
     }
 
-    if (id) {
+    if (id && !isNaN(parseInt(id))) {
       fetchProduct(parseInt(id), token);
+    } else {
+      setToast({ message: 'ID produk tidak valid', type: 'error' });
     }
   }, [id, navigate]);
 
@@ -34,8 +40,8 @@ const ProductEdit = () => {
         quantity: product.quantity.toString(),
         price: product.price % 1 === 0 ? Math.floor(product.price).toString() : product.price.toString(),
       });
-    } catch (err) {
-      navigate('/products');
+    } catch (err: any) {
+      setToast({ message: 'Gagal memuat data produk', type: 'error' });
     }
   };
 

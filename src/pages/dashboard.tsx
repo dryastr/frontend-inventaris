@@ -13,6 +13,10 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = 'Dashboard - Interview App';
+  }, []);
+
+  useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');

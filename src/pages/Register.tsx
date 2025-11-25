@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { register } from '../services';
 import type { RegisterData } from '../types/Auth';
@@ -10,6 +10,10 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = 'Register - Interview App';
+  }, []);
 
   const validateForm = () => {
     const newErrors: { name?: string; email?: string; password?: string } = {};

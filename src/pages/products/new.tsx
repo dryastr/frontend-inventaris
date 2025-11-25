@@ -12,6 +12,10 @@ const ProductNew = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = 'Tambah Produk - Interview App';
+  }, []);
+
+  useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');

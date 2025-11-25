@@ -57,10 +57,24 @@ const DataTable = ({ data, columns, actions = [], currentPage, totalPages, total
                 {columns.map((column) => (
                   <th
                     key={column.key}
-                    className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${column.sortable ? 'cursor-pointer hover:bg-gray-100' : ''}`}
+                    className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider select-none ${
+                      column.sortable
+                        ? 'cursor-pointer text-blue-600 hover:bg-blue-50 hover:text-blue-800'
+                        : 'text-gray-500'
+                    }`}
                     onClick={column.sortable ? () => handleSort(column.key) : undefined}
                   >
-                    {column.label} {column.sortable && sortBy === column.key && (sortOrder === 'asc' ? '↑' : '↓')}
+                    <div className="flex items-center space-x-1">
+                      <span>{column.label}</span>
+                      {column.sortable && sortBy === column.key && (
+                        <span className="text-blue-600 font-bold">
+                          {sortOrder === 'asc' ? '↑' : '↓'}
+                        </span>
+                      )}
+                      {column.sortable && sortBy !== column.key && (
+                        <span className="text-gray-400 text-xs">↕</span>
+                      )}
+                    </div>
                   </th>
                 ))}
                 {actions.length > 0 && <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>}

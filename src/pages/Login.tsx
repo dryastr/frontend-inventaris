@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../services';
 import type { LoginData } from '../types/Auth';
@@ -10,6 +10,10 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = 'Login - Interview App';
+  }, []);
 
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -39,19 +43,14 @@ const Login = () => {
     setLoading(true);
     try {
       const res = await login(formData);
-      console.log('Login response:', res);
       localStorage.setItem('token', res.token);
 
       if (res.user) {
-        console.log('Storing user data:', res.user);
         localStorage.setItem('user', JSON.stringify(res.user));
-      } else {
-        console.log('No user data in response');
       }
 
       navigate('/dashboard');
     } catch (err: any) {
-      console.error('Login error:', err);
       setGeneralError('Email atau password salah');
     } finally {
       setLoading(false);

@@ -31,30 +31,51 @@ const getActions = (handleEdit: (product: Product) => void, handleDelete: (id: n
 const ProductsIndex = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalItems, setTotalItems] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; productId: number | null }>({ isOpen: false, productId: null });
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const pageParam = searchParams.get('page');
+  const searchParam = searchParams.get('search');
+  const sortByParam = searchParams.get('sort_by');
+  const sortOrderParam = searchParams.get('sort_order') as 'asc' | 'desc';
+
+  const [currentPage, setCurrentPage] = useState(parseInt(pageParam || '1'));
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [searchQuery, setSearchQuery] = useState(searchParam || '');
+  const [sortBy, setSortBy] = useState(sortByParam || '');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(sortOrderParam || 'desc');
+
   useEffect(() => {
     const success = searchParams.get('success');
     if (success === 'created') {
       setToast({ message: 'Produk berhasil ditambahkan', type: 'success' });
-      setSearchParams({});
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('success');
+      setSearchParams(newParams);
     } else if (success === 'updated') {
       setToast({ message: 'Produk berhasil diperbarui', type: 'success' });
-      setSearchParams({});
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('success');
+      setSearchParams(newParams);
     }
 
     fetchProducts();
-  }, [currentPage, searchQuery, sortBy, sortOrder, searchParams, setSearchParams]);
+  }, [currentPage, searchQuery, sortBy, sortOrder]);
+
+  useEffect(() => {
+    document.title = 'Manajemen Produk - Interview App';
+  }, []);
+
+  useEffect(() => {
+    if (pageParam) setCurrentPage(parseInt(pageParam));
+    if (searchParam !== null) setSearchQuery(searchParam);
+    if (sortByParam) setSortBy(sortByParam);
+    if (sortOrderParam) setSortOrder(sortOrderParam);
+  }, [pageParam, searchParam, sortByParam, sortOrderParam]);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -70,19 +91,34 @@ const ProductsIndex = () => {
     }
   };
 
+  const updateUrlParams = (params: { page?: number; search?: string; sort_by?: string; sort_order?: 'asc' | 'desc' }) => {
+    const newParams = new URLSearchParams(searchParams);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== '') {
+        newParams.set(key, value.toString());
+      } else {
+        newParams.delete(key);
+      }
+    });
+    setSearchParams(newParams);
+  };
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
+    updateUrlParams({ search: query, page: 1 });
   };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    updateUrlParams({ page });
   };
 
   const handleSort = (newSortBy: string, newSortOrder: 'asc' | 'desc') => {
     setSortBy(newSortBy);
     setSortOrder(newSortOrder);
     setCurrentPage(1);
+    updateUrlParams({ sort_by: newSortBy, sort_order: newSortOrder, page: 1 });
   };
 
   const handleEdit = (product: Product) => {
