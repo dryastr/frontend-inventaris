@@ -1,10 +1,12 @@
 import type { Product } from '../types/Product';
 import { authenticatedFetch, API_BASE } from './httpClient';
 
-export const getProducts = async (page: number = 1, search: string = ''): Promise<any> => {
+export const getProducts = async (page: number = 1, search: string = '', sortBy: string = '', sortOrder: string = ''): Promise<any> => {
   const params = new URLSearchParams();
   params.append('page', page.toString());
   if (search) params.append('search', search);
+  if (sortBy) params.append('sort_by', sortBy);
+  if (sortOrder) params.append('sort_order', sortOrder);
 
   const res = await authenticatedFetch(`${API_BASE}/products?${params.toString()}`);
   return res.json();

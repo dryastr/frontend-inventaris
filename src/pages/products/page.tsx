@@ -5,15 +5,38 @@ import type { Product } from '../../types/Product';
 import Toast from '../../components/ui/Toast';
 import Modal from '../../components/ui/Modal';
 import Search from '../../components/ui/Search';
-import DataTable from '../../components/shared/DataTable';
+import DataTable from '../../components/ui/DataTable';
 import MainLayout from '../../layouts/MainLayout';
+
+const columns = [
+  { key: 'name', label: 'Nama', sortable: true },
+  { key: 'sku', label: 'SKU', sortable: true },
+  { key: 'quantity', label: 'Jumlah', sortable: true },
+  { key: 'price', label: 'Harga', sortable: true },
+];
+
+const getActions = (handleEdit: (product: Product) => void, handleDelete: (id: number) => void) => [
+  {
+    label: 'Ubah',
+    onClick: handleEdit,
+    condition: () => !!localStorage.getItem('token'),
+  },
+  {
+    label: 'Hapus',
+    onClick: (product: Product) => handleDelete(product.id),
+    condition: () => !!localStorage.getItem('token'),
+  },
+];
 
 const ProductsIndex = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; productId: number | null }>({ isOpen: false, productId: null });
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
@@ -31,14 +54,15 @@ const ProductsIndex = () => {
     }
 
     fetchProducts();
-  }, [currentPage, searchQuery, searchParams, setSearchParams]);
+  }, [currentPage, searchQuery, sortBy, sortOrder, searchParams, setSearchParams]);
 
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const response = await getProducts(currentPage, searchQuery);
+      const response = await getProducts(currentPage, searchQuery, sortBy, sortOrder);
       setProducts(response.data);
       setTotalPages(response.last_page);
+      setTotalItems(response.total);
     } catch (err) {
       setToast({ message: 'Gagal memuat produk', type: 'error' });
     } finally {
@@ -53,6 +77,12 @@ const ProductsIndex = () => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+  };
+
+  const handleSort = (newSortBy: string, newSortOrder: 'asc' | 'desc') => {
+    setSortBy(newSortBy);
+    setSortOrder(newSortOrder);
+    setCurrentPage(1);
   };
 
   const handleEdit = (product: Product) => {
@@ -106,13 +136,14 @@ const ProductsIndex = () => {
 
           <DataTable
             data={products}
+            columns={columns}
+            actions={getActions(handleEdit, handleDeleteClick)}
             currentPage={currentPage}
             totalPages={totalPages}
+            totalItems={totalItems}
             onPageChange={handlePageChange}
-            onEdit={handleEdit}
-            onDelete={handleDeleteClick}
+            onSort={handleSort}
             loading={loading}
-            isAuthenticated={isAuthenticated}
           />
         </div>
       </div>
