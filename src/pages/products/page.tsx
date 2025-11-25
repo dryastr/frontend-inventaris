@@ -150,13 +150,13 @@ const ProductsIndex = () => {
   return (
     <MainLayout>
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">Manajemen Produk</h1>
-          <div className="flex space-x-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Manajemen Produk</h1>
+          <div className="flex justify-end">
             {isAuthenticated && (
               <button
                 onClick={() => navigate('/products/create')}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 w-full sm:w-auto"
               >
                 Tambah Produk
               </button>
@@ -165,9 +165,11 @@ const ProductsIndex = () => {
         </div>
 
         <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-gray-900">Daftar Produk</h2>
-            <Search onSearch={handleSearch} />
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Daftar Produk</h2>
+            <div className="w-full sm:w-auto">
+              <Search onSearch={handleSearch} />
+            </div>
           </div>
 
           <DataTable

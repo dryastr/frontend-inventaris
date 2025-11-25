@@ -1,7 +1,11 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { BarChart3, Package, LogOut, LogIn } from 'lucide-react';
 
-const Sidebar = () => {
+interface SidebarProps {
+  onClose?: () => void;
+}
+
+const Sidebar = ({ onClose }: SidebarProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
@@ -15,6 +19,12 @@ const Sidebar = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/login');
+    onClose?.();
+  };
+
+  const handleLogin = () => {
+    navigate('/login');
+    onClose?.();
   };
 
   return (
@@ -27,6 +37,7 @@ const Sidebar = () => {
               <Link
                 key={item.path}
                 to={item.path}
+                onClick={onClose}
                 className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all duration-200 ${
                   location.pathname === item.path
                     ? 'bg-indigo-100 text-indigo-700 border-r-2 border-indigo-700'
@@ -52,7 +63,7 @@ const Sidebar = () => {
           </button>
         ) : (
           <button
-            onClick={() => navigate('/login')}
+            onClick={handleLogin}
             className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-700 rounded-md hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200"
           >
             <LogIn className="mr-3 h-5 w-5" />

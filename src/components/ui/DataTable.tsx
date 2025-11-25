@@ -43,9 +43,9 @@ const DataTable = ({ data, columns, actions = [], currentPage, totalPages, total
   return (
     <div className="bg-white overflow-hidden shadow rounded-lg">
       <div className="px-4 py-5 sm:p-6">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
           <div className="text-sm text-gray-700">
-            Menampilkan {startEntry} sampai {endEntry} dari {data.length} entri
+            Menampilkan {startEntry} sampai {endEntry} dari {totalItems} entri
           </div>
         </div>
 
@@ -125,17 +125,17 @@ const DataTable = ({ data, columns, actions = [], currentPage, totalPages, total
         </div>
 
         {totalPages > 1 && (
-          <div className="flex items-center justify-between mt-4">
-            <div className="text-sm text-gray-700">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-4">
+            <div className="text-sm text-gray-700 text-center sm:text-left">
               Halaman {currentPage} dari {totalPages}
             </div>
-            <div className="flex space-x-1">
+            <div className="flex flex-wrap justify-center sm:justify-end gap-1">
               <button
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="px-3 py-1 text-sm border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                className="px-2 sm:px-3 py-1 text-xs sm:text-sm border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
               >
-                Sebelumnya
+                ‹‹
               </button>
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                 const page = Math.max(1, currentPage - 2) + i;
@@ -144,7 +144,7 @@ const DataTable = ({ data, columns, actions = [], currentPage, totalPages, total
                   <button
                     key={page}
                     onClick={() => onPageChange(page)}
-                    className={`px-3 py-1 text-sm border rounded ${
+                    className={`px-2 sm:px-3 py-1 text-xs sm:text-sm border rounded ${
                       page === currentPage
                         ? 'bg-indigo-600 text-white border-indigo-600'
                         : 'border-gray-300 hover:bg-gray-50'
@@ -157,9 +157,9 @@ const DataTable = ({ data, columns, actions = [], currentPage, totalPages, total
               <button
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="px-3 py-1 text-sm border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                className="px-2 sm:px-3 py-1 text-xs sm:text-sm border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
               >
-                Selanjutnya
+                ››
               </button>
             </div>
           </div>
