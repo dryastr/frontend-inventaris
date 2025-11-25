@@ -23,6 +23,14 @@ export const authenticatedFetch = async (url: string, options: RequestInit = {})
     } catch {
       errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
     }
+
+    if (response.status === 500 && errorData.message?.includes('Unauthenticated')) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+      throw new Error('Session expired');
+    }
+
     const error: any = new Error(errorData.message || `HTTP ${response.status}`);
     error.status = response.status;
     error.errors = errorData.errors;
